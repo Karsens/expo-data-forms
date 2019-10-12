@@ -1,0 +1,24 @@
+{
+  "name": "react-native-data-forms",
+  "version": "2.1.2",
+  "description": "Create beautiful forms that submit data to redux, a graphql mutation, or an api in many different input types",
+  "main": "index.js",
+  "repository": "git@github.com:EAT-CODE-KITE-REPEAT/react-native-data-forms.git",
+  "author": "Wijnand Karsens <wijnandworld@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "fastdeploy": "git add . && git commit -m \"Small improvements\" && npm run deploy",
+    "deploy": "yarn publish && git push"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-vector-icons": "*"
+  },
+  "dependencies": {
+    "react-native-platform-touchable": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.15"
+  }
+}
