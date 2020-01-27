@@ -2,10 +2,13 @@ import React from "react";
 
 import { ActivityIndicator, View, Keyboard } from "react-native";
 
-import { notNullNorUndefined, mergeObjectArray } from "./utils";
-import { removeDuplicates } from "../util";
+import {
+  notNullNorUndefined,
+  mergeObjectArray,
+  removeDuplicates
+} from "./utils";
 import Button from "./button.component";
-import { Component as KAS } from "../expo-elements/KAS";
+import { Component as KAS } from "./KAS";
 
 /**
  * #toSearch
@@ -176,7 +179,6 @@ export type State = {
 };
 
 export class Component extends React.Component<Props, State> {
-
   constructor(props: Props) {
     super(props);
     this.saveValues = this.saveValues.bind(this); //to give props
@@ -370,5 +372,4 @@ export class Component extends React.Component<Props, State> {
       </KAS>
     );
   }
-
 }
