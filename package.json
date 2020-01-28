@@ -1,6 +1,6 @@
 {
   "name": "expo-data-forms",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Create beautiful forms that submit data to redux, a graphql mutation, or an api in many different input types",
   "main": "index.js",
   "repository": "git@github.com:EAT-CODE-KITE-REPEAT/expo-data-forms.git",
@@ -16,6 +16,8 @@
     "react-native-vector-icons": "*"
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^3.4.1",
+    "react-native-iphone-x-helper": "^1.2.1",
     "react-native-platform-touchable": "^1.1.1"
   },
   "devDependencies": {
