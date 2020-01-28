@@ -1,12 +1,15 @@
-# React Native Data Forms
+# Expo Data Forms
 
-Create beautiful forms that submit data to redux, a graphql mutation, or an api in many different input types
+Create beautiful forms that submit data to redux, a graphql mutation, or an api in many different input types.
+The goal of this repo is to seperate semantics (form fields) from the API from User Interface of showing editable and savable database data from any mutation, where data can have any type.
 
-React-native-data-forms is an opinionated yet very flexible library that makes data from any source editable using react native components. The data can be of many different types. If you have an app with many data properties that need to be edited, this can be a huge boilerplate reducer! For me it was, at least. When I introduced it it instantly removed >1000 LOC in my codebase. Then, I doubled the amount of pages with only a few dozen LOC added. Without this component that would be thousands of LOC.
+![goal](./resources/dataforms2.png)
+
+[Live example here](http://dataforms.surge.sh/)
+
+expo-data-forms is an opinionated yet very flexible library that makes data from any source editable using react native components. The data can be of many different types. If you have an app with many data properties that need to be edited, this can be a huge boilerplate reducer! For me it was, at least. When I introduced it it instantly removed >1000 LOC in my codebase. Then, I doubled the amount of pages with only a few dozen LOC added. Without this component that would be thousands of LOC.
 
 This component is built for mutations of React Apollo GraphQL, but it can potentially also be used together with local databases, redux, or even state!
-
-The goal of this function is to seperate semantics from data from implementation of showing editable and savable database data from any mutation, where data can have any type.
 
 ## Documentation
 
@@ -14,8 +17,8 @@ The goal of this function is to seperate semantics from data from implementation
 
 ### Step 1:
 
-- Install the library: `yarn add react-native-data-forms`
-- Install the input types library if you wish to use ours: `yarn add leckr-inputs`
+- Install the library: `yarn add expo-data-forms`
+- Install the input types library if you wish to use ours: `yarn add expo-inputs`
 
 ### Step 2:
 
@@ -25,13 +28,9 @@ If you want to use our data-types:
 
 ```js
 import React from "react";
-import expo from "expo";
 
-import { inputs, FieldComponent } from "leckr-inputs";
-import _DataForm from "react-native-data-forms";
-
-//optionally, import your own inputs
-import emailsOrUsers from "../fat/emailsOrUsersInput";
+import { inputs, FieldComponent } from "expo-inputs";
+import { Component as _DataForm, Field } from "expo-data-forms";
 
 //this is needed for image upload
 const firebaseConfig = {
@@ -53,14 +52,12 @@ const DataForm = props => {
   const leckrInputs = inputs({
     firebaseConfig,
     googlePlacesConfig,
-    expo,
     navigation: props.navigation
   });
 
   const inputTypes = {
-    ...leckrInputs,
+    ...leckrInputs
     //add your own custom types
-    emailsOrUsers
   };
 
   const allProps = {
@@ -72,30 +69,7 @@ const DataForm = props => {
   return <_DataForm {...allProps} />;
 };
 
-export default DataForm;
-```
-
-If you will import your own data-types and don't use ours:
-
-```js
-import React from "react";
-
-//import your own inputs and fieldcomponent.
-import { inputs, FieldComponent } from "????";
-
-import _DataForm from "react-native-data-forms";
-
-const DataForm = props => {
-  const allProps = {
-    ...props,
-    inputTypes: inputs,
-    FieldComponent
-  };
-
-  return <_DataForm {...allProps} />;
-};
-
-export default DataForm;
+export { DataForm, Field };
 ```
 
 ### Step 3:
@@ -135,43 +109,39 @@ Object.keys(screens).forEach(key => {
 
 ## Example
 
-You're all set up! You can use the component like this: This is an example with all default types, getting data from a GraphQL query, sending it to a GraphQL mutation:
+You're all set up! You can use the component like this: This is an example with all default types.
 
 ```js
 import React from "react";
-import gql from "graphql-tag";
-import { compose, graphql } from "react-apollo";
-import { DataForm } from "../import";
-import { Field } from "react-native-data-forms/types";
-import { Alert } from "react-native";
+import { Alert, View, Text } from "react-native";
+import { DataForm, Field } from "../wrappers/DataForms";
+import Header from "../components/Header";
 
 class Example extends React.Component {
   render() {
     const { data, mutate, navigation } = this.props;
 
-    const defaultComplete = () => Alert.alert("Saved");
-
     const fields: Field[] = [
-      { field: "coverImage", type: "coverImage" },
-      { field: "image", type: "image", title: "Pick an image" },
+      { field: "simpleImage", type: "simpleImage" },
+      // { field: "image", type: "image", title: "Pick an image" },
       { field: "text", title: "Text" }, //default type is a text input
       { field: "textArea", title: "Text Area", type: "textArea" },
       { field: "numbers", title: "Fill in Numbers here", type: "numbers" },
       { field: "phone", title: "Phone number", type: "phone" },
       { field: "date", title: "Date", type: "date" },
-      {
-        field: "STARTEND",
-        titles: {
-          start: "Start",
-          end: "End"
-        },
-        mapFieldsToDB: ({ start, end }) => ({
-          eventAt: start,
-          eventEndAt: end
-        }),
-        startSection: true,
-        type: "dates"
-      },
+      // {
+      //   field: "STARTEND",
+      //   titles: {
+      //     start: "Start",
+      //     end: "End"
+      //   },
+      //   mapFieldsToDB: ({ start, end }) => ({
+      //     eventAt: start,
+      //     eventEndAt: end
+      //   }),
+      //   startSection: true,
+      //   type: "dates"
+      // },
 
       {
         startSection: true,
@@ -214,93 +184,62 @@ class Example extends React.Component {
         type: "categories"
       },
 
-      { field: "dictionary", title: "Dictionary", type: "dictionary" }
+      { field: "dictionary", title: "Dictionary", type: "dictionary" },
+      { field: "birthday", title: "Birthday", type: "birthday" }
     ];
 
     return (
-      <DataForm
-        navigation={navigation}
-        fields={fields}
-        onComplete={defaultComplete}
-        mutate={vars => mutate(vars)}
-        values={data.example}
-      />
+      <View style={{ flex: 1 }}>
+        <Header navigation={navigation} />
+
+        <DataForm
+          navigation={navigation}
+          fields={fields}
+          onComplete={() => Alert.alert("Saved")}
+          //here you can put a graphql or redux mutation
+          mutate={vars =>
+            new Promise((resolve, reject) => {
+              console.log("vars", vars);
+              resolve({ data: "some data from mutation" });
+            })
+          }
+          values={{
+            // this can come from a graphql query
+            simpleImage: "",
+            text: "",
+            textArea: "",
+            numbers: "",
+            phone: "",
+            color: "",
+            boolean: false,
+
+            selectOne: "",
+            selectMultiple: "",
+            categories: "",
+            dictionary: "",
+            eventAt: "",
+            birthday: {}
+          }}
+        />
+      </View>
     );
   }
 }
 
-const query = gql`
-  query Example {
-    example {
-      coverImage
-      image
-      text
-      textArea
-      numbers
-      phone
-      date
-      color
-      boolean
-      selectOne
-      selectMultiple
-      categories
-      dictionary
-      eventAt
-    }
-  }
-`;
-
-const mutation = gql`
-  mutation ExampleMutation(
-    $coverImage: String
-    $image: String
-    $text: String
-    $textArea: String
-    $numbers: Int
-    $phone: String
-    $date: Date
-    $color: String
-    $boolean: Boolean
-    $selectOne: String
-    $selectMultiple: String
-    $categories: String
-    $dictionary: String
-    $eventAt: Date
-  ) {
-    exampleMutation(
-      coverImage: $coverImage
-      image: $image
-      text: $text
-      textArea: $textArea
-      numbers: $numbers
-      phone: $phone
-      date: $date
-      color: $color
-      boolean: $boolean
-      selectOne: $selectOne
-      selectMultiple: $selectMultiple
-      categories: $categories
-      dictionary: $dictionary
-      eventAt: $eventAt
-    )
-  }
-`;
-
-export default compose(
-  graphql(query),
-  graphql(mutation)
-)(Example);
+export default Example;
 ```
 
-This will look like this:
+This will roughly look like this:
 
 ![1](./resources/data-forms-1.gif)
 ![2](./resources/data-forms-2.gif)
 ![3](./resources/data-forms-3.gif)
 
+Live example [here](https://dataforms.surge.sh)
+
 ### Props
 
-[See types-file](/types.tsx)
+[See types](/index.js)
 
 ## Expanding
 
@@ -315,15 +254,11 @@ In the future, I'm planning to add these features to the codebase.
 
 If anyone using this likes to contribute, please contact me so we can discuss about the way to implement things. [Here](https://karsens.com) you can find a contact button.
 
-## How to add my own input types?
-
-Coming soon. For now, have a look [here](./inputs) how we do it.
-
 ## F.A.Q.
 
 **Our codebase is way to complex for something as magical as this, isn't it?**
 
-We strive to make this work for almost anything. You can hide/show fields based on other data, you can validate values and show error messages, and you can add your own custom input type components. There are many props you can additionally add to a field, see [types](./types.tsx)
+We strive to make this work for almost anything. You can hide/show fields based on other data, you can validate values and show error messages, and you can add your own custom input type components. There are many props you can additionally add to a field, see [types](./index.js)
 
 **What's the advantage of this library if I just use my own components?**
 

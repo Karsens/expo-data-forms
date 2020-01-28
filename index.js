@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ActivityIndicator, View, Keyboard } from "react-native";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 import {
   notNullNorUndefined,
@@ -178,7 +179,7 @@ export type State = {
   loading: boolean
 };
 
-export class Component extends React.Component<Props, State> {
+class Component extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.saveValues = this.saveValues.bind(this); //to give props
@@ -359,17 +360,23 @@ export class Component extends React.Component<Props, State> {
     });
 
     return noScroll ? (
-      <View>
-        {allFields}
-        {this.renderSaveButton()}
-      </View>
+      <ActionSheetProvider>
+        <View>
+          {allFields}
+          {this.renderSaveButton()}
+        </View>
+      </ActionSheetProvider>
     ) : (
-      <KAS
-        noNavigationBelow={noNavigationBelow}
-        footer={this.renderSaveButton()}
-      >
-        {allFields}
-      </KAS>
+      <ActionSheetProvider>
+        <KAS
+          noNavigationBelow={noNavigationBelow}
+          footer={this.renderSaveButton()}
+        >
+          {allFields}
+        </KAS>
+      </ActionSheetProvider>
     );
   }
 }
+
+export { Component };
