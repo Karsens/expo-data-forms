@@ -270,9 +270,11 @@ class Component extends React.Component<Props, State> {
         }
       }
 
-      if (validate && validate(this.state[field]) !== true) {
+      if (validate && validate(this.state[field], this.state) !== true) {
         error = true;
         this.setState({ [field + "Error"]: errorMessage });
+      } else {
+        this.setState({ [field + "Error"]: null });
       }
     });
 
